@@ -36,3 +36,4 @@ int main(int argc, char const *argv[])
 }
 
 ```
+You can also use routines in `bit.h` to implement your own bit vector functionalities.
