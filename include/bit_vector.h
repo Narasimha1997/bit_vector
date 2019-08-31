@@ -54,7 +54,7 @@ static inline void toggle_bit(bit_group_t * bit_vector, unsigned int position) {
     toggle_bit_in_group(&bit_vector[bit_group_number], bit_position);
 }
 
-static inline uint8_t compare_bit_vectors(
+static inline unsigned int compare_bit_vectors(
     bit_group_t * bit_vector_a,  
     bit_group_t * bit_vector_b, 
     unsigned int lower_bound, 
@@ -62,7 +62,15 @@ static inline uint8_t compare_bit_vectors(
 
         //this routine checks whether the bit vectors a and b are same within the given region
         //bounded by upper and lower bounds
+        //returns 0 if not equal, returns 1 constant if equal, -1 if there are bounding errors
+        if(lower_bound > upper_bound) return -1;
+        if(lower_bound % 8 != 0 || upper_bound % 8 != 0) return -1;
+        unsigned int iter_ = 0, xor_sum = 0;
+        int lower_group = lower_bound / 8, n_scan_groups = (upper_bound - lower_bound) / 8;
+        for(iter_ = 0; iter_ < n_scan_groups; iter_++) 
+            xor_sum += bit_vector_a[lower_bound + iter_] ^ bit_vector_b[lower_bound + iter_];
         
+        return (xor_sum == 0) ? 1 : 0;
 }
 
 static inline void free_bit_vector(bit_group_t * bit_vector) {
