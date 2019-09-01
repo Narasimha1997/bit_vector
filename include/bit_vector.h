@@ -73,6 +73,37 @@ static inline unsigned int compare_bit_vectors(
         return (xor_sum == 0) ? 1 : 0;
 }
 
+static inline void reset_all_bits(
+    bit_group_t * bit_vector, 
+    unsigned int lower_bound, 
+    unsigned int upper_bound) {
+
+        if(lower_bound > upper_bound) return -1;
+        if(lower_bound % 8 != 0 || upper_bound % 8 != 0) return -1;
+        unsigned int iter_ = 0;
+        for(iter_ = (lower_bound) / 8; iter_ < (upper_bound - lower_bound) / 8; iter_ ++) bit_vector[iter_] &= 0x00;
+}
+
+static inline void set_all_bits(
+    bit_group_t * bit_vector, 
+    unsigned int lower_bound,
+    unsigned int upper_bound) {
+        if(lower_bound > upper_bound) return -1;
+        if(lower_bound % 8 != 0 || upper_bound % 8 != 0) return -1;
+        unsigned int iter_ = 0;
+        for(iter_ = (lower_bound) / 8; iter_ < (upper_bound - lower_bound) / 8; iter_ ++) bit_vector[iter_] |= 0xff;
+}
+
+static inline unsigned int get_remaining_bits(bit_group_t * bit_vector, unsigned int length) {
+    return (length - get_n_bits_set(bit_vector, length));
+}
+
+static inline unsigned int has_free_capacity(bit_group_t * bit_vector, unsigned int length) {
+    return (
+        (get_n_bits_set(bit_vector, length) >= length) ? 0 : 1
+    );
+}
+
 static inline void free_bit_vector(bit_group_t * bit_vector) {
     free(bit_vector);
 }
